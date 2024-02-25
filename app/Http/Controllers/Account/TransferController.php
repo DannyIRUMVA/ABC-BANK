@@ -7,56 +7,68 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
 use App\Models\User;
+use App\Models\Account;
+use Illuminate\Support\Facades\DB; // Add the import statement for DB facade
 
 class TransferController extends Controller
 {
-    public function index(): View{
-
+    public function index(): View
+    {
         return view('account.transfer');
-
     }
 
-    public function Transfer(Request $request)
+    public function transfer(Request $request)
     {
 
         $request->validate([
-            'amount' => 'required|numeric',
-            'email' => 'required|email',
+            'email' => 'required|email|exists:users,email',
+            'amount' => 'required|numeric|min:0',
         ]);
 
+        $user = auth()->user();
 
-        $recipient = User::where('email', $request->email)->first();
+        $senderAccount = $user->account;
 
-        if ($recipient) {
+        $receiver = User::where('email', $request->email)->first();
 
-            $recipientAccount = $recipient->account;
+        $receiverAccount = $receiver->account;
 
-            if ($recipientAccount) {
+        $totalCredits = Account::where('user_id', $user->id)
+            ->where('type', 'Credit')
+            ->sum('amount');
 
-                $sender = Auth::user();
+        $totalDebits = Account::where('user_id', $user->id)
+            ->where('type', 'Debit')
+            ->sum('amount');
 
+        $balance = $totalCredits - $totalDebits;
 
-                $recipientAccount->account()->create([
-                    'amount' => $request->amount,
-                    'type' => 'Credit',
-                    'details' => "transfered by " . $sender->email,
-                ]);
+        if ($balance < $request->amount) {
+            return back()->with('error', 'Insufficient balance for transfer.');
+        }
 
+        $transactionDetails = "Transfer to  {$receiver->name}";
 
-                $senderAccount = $sender->account;
+        try {
+            DB::accounts(function () use ($senderAccount, $receiverAccount, $request, $transactionDetails, $user, $receiver) {
                 $senderAccount->account()->create([
+                    'user_id' => $user->id,
                     'amount' => -$request->amount,
                     'type' => 'Debit',
-                    'details' => "transfer for " . $recipient->email,
+                    'details' => $transactionDetails,
                 ]);
 
-                return redirect()->back()->with('success', 'Amount withdrawn successfully.');
-            } else {
-                return redirect()->back()->with('error', 'Recipient does not have an account.');
-            }
-        } else {
-            return redirect()->back()->with('error', 'User not found.');
+                $receiverAccount->account()->create([
+                    'user_id' => $receiver->id,
+                    'amount' => $request->amount,
+                    'type' => 'Credit',
+                    'details' => "Received from {$senderAccount->user->name}",
+                ]);
+            });
+        } catch (\Exception $e) {
+            return back()->with('error', 'Transfer failed. Please try again later.');
         }
-    }
 
+        return back()->with('success', 'Transfer successful.');
+    }
 }

@@ -1,5 +1,18 @@
 <x-app-layout>
 
+    {{-- Alerts --}}
+    @if (session('success'))
+        <script>
+            alert('{{ session('success') }}');
+        </script>
+    @endif
+
+    @if (session('error'))
+        <script>
+            alert('{{ session('error') }}');
+        </script>
+    @endif
+
     <div class="flex py-12 ml-9">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-white overflow-hidden shadow-sm w-[29em]" style="font-size: 1em;">

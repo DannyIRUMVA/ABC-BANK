@@ -14,7 +14,7 @@
                 <div class="p-3 text-gray-500 border-b-2 border-gray-200">
                     YOUR BALANCE
                     <span class="ml-10">
-                        ${{ $balance }}
+                        $ {{ $balance }}
                     </span>
                 </div>
             </div>
