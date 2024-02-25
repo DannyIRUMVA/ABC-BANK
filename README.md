@@ -58,13 +58,19 @@ Welcome to ABC Bank Laravel Application! This application provides a simple plat
     php artisan migrate
     ```
 
-8. Run the development server:
+8. Migrate the database:
+
+    ```bash
+    npm install && npm run build
+    ```
+
+9. Run the development server:
 
     ```bash
     php artisan serve
     ```
 
-9. Access the application in your web browser at `http://localhost:8000`.
+10. Access the application in your web browser at `http://localhost:8000`.
 
 ## Usage
 
