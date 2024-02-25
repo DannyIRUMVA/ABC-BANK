@@ -74,11 +74,4 @@ Welcome to ABC Bank Laravel Application! This application provides a simple plat
    - Withdraw funds from your account.
    - Transfer funds between your accounts or to other users' accounts.
    - View your transaction statements to keep track of your financial activities.
-
-## Contributing
-
-Contributions are welcome! Please feel free to submit a pull request or open an issue if you encounter any problems or have suggestions for improvements.
-
-## License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+Thanks
