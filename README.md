@@ -20,7 +20,7 @@ Welcome to ABC Bank Laravel Application! This application provides a simple plat
 2. Navigate to the project directory:
 
     ```bash
-    cd abc-bank-laravel
+    cd ABC-BANK
     ```
 
 3. Install dependencies using Composer:
