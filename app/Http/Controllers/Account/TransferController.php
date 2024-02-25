@@ -41,6 +41,8 @@ class TransferController extends Controller
             ->where('type', 'Debit')
             ->sum('amount');
 
+
+        //finding the remaining balance
         $balance = $totalCredits - $totalDebits;
 
         if ($balance < $request->amount) {
@@ -49,6 +51,7 @@ class TransferController extends Controller
 
         $transactionDetails = "Transfer to  {$receiver->name}";
 
+        // storing the transaction
         try {
             DB::accounts(function () use ($senderAccount, $receiverAccount, $request, $transactionDetails, $user, $receiver) {
                 $senderAccount->account()->create([
